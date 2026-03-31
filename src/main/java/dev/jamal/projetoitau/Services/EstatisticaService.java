@@ -5,6 +5,7 @@ import dev.jamal.projetoitau.DTOS.TransacaoDTO;
 import dev.jamal.projetoitau.Repositorys.TransacaoRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.DoubleSummaryStatistics;
 import java.util.Map;
 
 
@@ -18,27 +19,28 @@ public class EstatisticaService {
     }
 
     public Map<String, Object> getEstatistica() {
+        transacaoRepository.limparDados();
+
+        DoubleSummaryStatistics stats= transacaoRepository.getValores().stream()
+                .mapToDouble(transacao -> transacao.getValor().doubleValue())
+                .summaryStatistics();
+
+        if (transacaoRepository.getValores() == null){
+            return Map.of(
+                    "count", 0,
+                    "sum", 0,
+                    "avg", 0,
+                    "min", 0,
+                    "max", 0
+            );
+        }
+
         return Map.of(
-                "count" , transacaoRepository.getValores().size(),
-
-                "sum" , transacaoRepository.getValores().stream()
-                        .mapToDouble(transacao -> transacao.getValor().doubleValue())
-                        .sum(),
-
-                "avg" , transacaoRepository.getValores().stream()
-                        .mapToDouble(transacao -> transacao.getValor().doubleValue())
-                        .average()
-                        .orElse(0.0),
-
-                "min", transacaoRepository.getValores().stream()
-                        .mapToDouble(transacao -> transacao.getValor().doubleValue())
-                        .min()
-                        .orElse(0.0),
-
-                "max", transacaoRepository.getValores().stream()
-                        .mapToDouble(transacao -> transacao.getValor().doubleValue())
-                        .max()
-                        .orElse(0.0)
+                "count", stats.getCount(),
+                "sum", stats.getSum(),
+                "avg", stats.getAverage(),
+                "min", stats.getMin(),
+                "max", stats.getMax()
         );
     }
 

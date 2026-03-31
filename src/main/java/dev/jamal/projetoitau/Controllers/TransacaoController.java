@@ -23,18 +23,6 @@ public class TransacaoController {
         this.transacaoRepository = transacaoRepository;
     }
 
-    @GetMapping("/teste")
-    public String rotaTeste(){
-        return "teste";
-    }
-
-    @GetMapping("/testeTransacao")
-    public BigDecimal rotaTeste2(){
-        TransacaoDTO transacao = new TransacaoDTO();
-        transacao.setValor(new BigDecimal(100));
-        return transacao.getValor();
-    }
-
     @PostMapping("/adicionar")
     public ResponseEntity adicionar(@RequestBody TransacaoDTO transacao){
         // tenta validar a transacao
