@@ -29,7 +29,7 @@ public class TransacaoController {
         try {
             transacaoService.validarTransacao(transacao);
             transacaoRepository.salvarDados(transacao);
-            return ResponseEntity.status(HttpStatus.CREATED).build();
+            return ResponseEntity.ok(transacao).status(HttpStatus.CREATED).build();
 
         } catch (IllegalArgumentException exception){
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();

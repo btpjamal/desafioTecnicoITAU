@@ -1,8 +1,9 @@
 package dev.jamal.projetoitau.Services;
 
 
-import dev.jamal.projetoitau.DTOS.TransacaoDTO;
 import dev.jamal.projetoitau.Repositorys.TransacaoRepository;
+import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.DoubleSummaryStatistics;
@@ -10,6 +11,7 @@ import java.util.Map;
 
 
 @Service
+@Slf4j
 public class EstatisticaService {
 
     private final TransacaoRepository transacaoRepository;
@@ -25,7 +27,8 @@ public class EstatisticaService {
                 .mapToDouble(transacao -> transacao.getValor().doubleValue())
                 .summaryStatistics();
 
-        if (transacaoRepository.getValores() == null){
+        if (stats.getCount() == 0){
+            log.warn("lista vazia");
             return Map.of(
                     "count", 0,
                     "sum", 0,
@@ -35,6 +38,7 @@ public class EstatisticaService {
             );
         }
 
+        log.info("lista carregada com sucesso");
         return Map.of(
                 "count", stats.getCount(),
                 "sum", stats.getSum(),
