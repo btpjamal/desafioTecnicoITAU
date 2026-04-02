@@ -9,14 +9,13 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.math.BigDecimal;
 
 @RestController
 @RequestMapping("/transacao")
 public class TransacaoController {
 
-    private TransacaoService transacaoService;
-    private TransacaoRepository transacaoRepository;
+    private final TransacaoService transacaoService;
+    private final TransacaoRepository transacaoRepository;
 
     public TransacaoController(TransacaoService transacaoService, TransacaoRepository transacaoRepository) {
         this.transacaoService = transacaoService;

@@ -1,7 +1,9 @@
 package dev.jamal.projetoitau.Repositorys;
 
 import dev.jamal.projetoitau.DTOS.TransacaoDTO;
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import java.time.OffsetDateTime;
@@ -18,10 +20,17 @@ public class TransacaoRepository{
     private final List<TransacaoDTO> transacoesList= new ArrayList<>();
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
-    public TransacaoRepository(){
-        // agenda a limpeza a cada 60 secs
-        scheduler.scheduleAtFixedRate(this::limparDados, 60, 60, TimeUnit.SECONDS);
+    @Value("${estatistica.tempo}")
+    private int tempo;
+
+    @PostConstruct
+    public void init() {
+        if (tempo > 0) {
+            scheduler.scheduleAtFixedRate(this::limparDados, tempo, tempo, TimeUnit.SECONDS);
+            log.info("Agendamento configurado para "+ tempo +" segundos");
+        }
     }
+
 
     // salvar os dados em uma lista
     public void salvarDados(TransacaoDTO transacaoDTO){
@@ -31,7 +40,7 @@ public class TransacaoRepository{
 
     // apagar lista após 60 segs.
     public void limparDados(){
-        OffsetDateTime limite = OffsetDateTime.now().minusSeconds(60);
+        OffsetDateTime limite = OffsetDateTime.now().minusSeconds(tempo);
         transacoesList.removeIf(t -> t.getDataHora().isBefore(limite));
         log.warn("lista resetada");
     }
