@@ -1,10 +1,16 @@
 package dev.jamal.projetoitau.Properties;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
 @Validated
 @ConfigurationProperties(prefix = "estatistica")
-public record EstatisticaProperties(Integer segunfos) {
+public record EstatisticaProperties(
+        @NotNull
+        @Positive
+        Integer tempo
 
+) {
 }
